@@ -1,101 +1,47 @@
 <template>
   <view class="tourism-circle">
-    <view class="t-page-head">
+    <view class="t-page-head" style="position:fixed;z-index: 10;background-color:#fff;">
       <span class="t-page-head-title">分享你眼中的柯桥</span>
-      <publish-button class="t-page-head-button"></publish-button>
+      <publish-button @click.native="gotoPublish" class="t-page-head-button"></publish-button>
     </view>
 
-    <view class="t-page-body">
-      <view v-for="(item,index) in tourPublish " :key="index" class="t-page-content">
-        {{item}}
-      </view>
-    </view>
+
+    <scroll-view v-for="(item,index) in tourPublish " :key="index" class="t-page-content">
+      <img class="my-title" src="@/static/z/images/title.jpg" alt="">
+      <span class="my-name">{{item.themeName}}</span>
+      <span class="my-circle-time">2020-03-04 16:00</span>
+
+      <p class="my-circle-introduction">安康寺是安昌古镇上一座规模颇大的寺庙，建筑显然是翻新的，宏伟壮观。</p>
+      <publish-grid :listImg="listImg"></publish-grid>
+    </scroll-view>
+
   </view>
 </template>
 
 <script>
   import PublishButton from "@/components/tourismCircle/PublishButton";
   import {getAllTheme} from "@/components/tourismCircle/request/request"
+  import PublishGrid from "@/components/tourismCircle/PublishGrid";
 
   export default {
     name: "TourismCircleHome",
     data() {
       return {
-        tourPublish: [{
-          "code": "SUCCESS",
-          "message": "SUCCESS",
-          "data": [
-            {
-              "themeId": 1,
-              "themeName": "theme08",
-              "themeScenic": null,
-              "themeRoute": null,
-              "themeInfo": "主题游一个",
-              "themeDelete": false,
-              "themeCreateTime": null,
-              "themeUpdateTime": null,
-              "themeDeleteTime": null,
-              "themeRemarks": "备注",
-              "themePictures": "http://192.168.1.48:9498/static/file/theme/1/picture_0ce2e12479654109ac25f0f87e4d7b80.png,"
-            },
-            {
-              "themeId": 8,
-              "themeName": "123",
-              "themeScenic": null,
-              "themeRoute": null,
-              "themeInfo": "123",
-              "themeDelete": false,
-              "themeCreateTime": null,
-              "themeUpdateTime": null,
-              "themeDeleteTime": null,
-              "themeRemarks": "123",
-              "themePictures": "http://192.168.1.48:9498/static/file/theme/8/picture_42b82cdd741a406f854b4060ce3a9f3e.png,"
-            },
-            {
-              "themeId": 10,
-              "themeName": "123",
-              "themeScenic": null,
-              "themeRoute": null,
-              "themeInfo": "123",
-              "themeDelete": false,
-              "themeCreateTime": null,
-              "themeUpdateTime": null,
-              "themeDeleteTime": null,
-              "themeRemarks": "313",
-              "themePictures": "http://192.168.1.48:9498/static/file/theme/10/picture_24f3540bd8b64e88b5186194e30ad061.png,"
-            },
-            {
-              "themeId": 13,
-              "themeName": "theme081",
-              "themeScenic": null,
-              "themeRoute": null,
-              "themeInfo": "主题游一个1",
-              "themeDelete": false,
-              "themeCreateTime": null,
-              "themeUpdateTime": null,
-              "themeDeleteTime": null,
-              "themeRemarks": "备注1",
-              "themePictures": ""
-            },
-            {
-              "themeId": 14,
-              "themeName": "theme08",
-              "themeScenic": null,
-              "themeRoute": null,
-              "themeInfo": "主题游一个",
-              "themeDelete": false,
-              "themeCreateTime": null,
-              "themeUpdateTime": null,
-              "themeDeleteTime": null,
-              "themeRemarks": "备注",
-              "themePictures": "http://192.168.1.48:9498/static/file/theme/14/picture_4be0b6fc21344277b4d6564164828d92.png,"
-            }
-          ]
-        }]
+        tourPublish: [],
+        listImg: [
+          "http://img3m6.ddimg.cn/31/9/27916546-1_e_3.jpg",
+          "http://img3m6.ddimg.cn/31/9/27916546-2_e_3.jpg",
+          "http://img3m6.ddimg.cn/31/9/27916546-3_e_3.jpg",
+          "http://img3m6.ddimg.cn/31/9/27916546-4_e_3.jpg",
+          "http://img3m6.ddimg.cn/31/9/27916546-2_e_3.jpg",
+          "http://img3m6.ddimg.cn/31/9/27916546-3_e_3.jpg",
+          "http://img3m6.ddimg.cn/31/9/27916546-4_e_3.jpg"
+        ],
       }
     },
     components: {
-      PublishButton
+      PublishButton,
+      PublishGrid
     },
     methods: {
       getData() {
@@ -103,8 +49,13 @@
           url: "/theme/getAllTheme",
         }).then(data => {
           let [err, res] = data
-          this.tourPublish = res.data
+          this.tourPublish = res.data.data
         })
+      },
+      gotoPublish(){
+        uni.navigateTo({
+          url: 'TourismPublish?id=1&name=uniapp'
+        });
       }
     },
     created() {
@@ -116,14 +67,17 @@
 <style scoped>
   .tourism-circle{
     width: 100vw;
-    height: 100vh;
+    /*height: 92.7vh;*/
+    height: calc(100% - 7.3%);
+    /*overflow: hidden;*/
     /*position: fixed;*/
   }
   .t-page-head {
-    height: 128rpx;
+    /*height: 128rpx;*/
+    height: 86rpx;
     width: 100vw;
     color: #343130;
-    box-shadow: 0px 6px 15px 0px rgba(85, 70, 59, 0.23);
+    box-shadow: 0 6rpx 15rpx 0 rgba(85, 70, 59, 0.23);
   }
 
   .t-page-head-title {
@@ -133,7 +87,8 @@
     color: rgba(52, 49, 48, 1);
     position: relative;
     left: 213rpx;
-    top: 66rpx;
+    /*top: 66rpx;*/
+    top:24rpx;
   }
 
   .t-page-head-button {
@@ -143,6 +98,46 @@
     float: right;
     text-align: center;
     right: 19rpx;
-    top: 58rpx;
+    /*top: 58rpx;*/
+    top: 16rpx;
+  }
+
+  .t-page-content{
+    position: relative;
+    top: 120rpx;
+    margin: 0rpx 15rpx 0rpx 15rpx;
+
+  }
+  .my-title{
+    width: 78.4rpx;
+  }
+  .my-name{
+    width:113rpx;
+    height:27rpx;
+    font-size:28rpx;
+    font-family:Source Han Sans CN;
+    font-weight:bold;
+    color:rgba(52,49,48,1);
+    margin: 0 0 10rpx 30rpx;
+  }
+  .my-circle-time{
+    width:255rpx;
+    height:12rpx;
+    font-size:12rpx;
+    font-family:Source Han Sans CN;
+    font-weight:bold;
+    color:rgba(52,49,48,1);
+    position: relative;
+    float: right;
+    margin-top: 49rpx;
+  }
+  .my-circle-introduction{
+    position: relative;
+    margin-left: 120rpx;
+    margin-top: 20rpx;
+    width: 586rpx;
+    font-size:24rpx;
+    font-weight:bold;
+    color:rgba(52,49,48,1);
   }
 </style>
