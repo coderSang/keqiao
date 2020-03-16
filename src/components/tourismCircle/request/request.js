@@ -1,6 +1,6 @@
 const baseUrl = 'http://192.168.1.48:9498'
 
-export function getAllTheme(param) {
+export function getCurrentCircle(param) {
   //GET或POST
   if (param.method) {
     param.method = param.method.toUpperCase();//小写改为大写
