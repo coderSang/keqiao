@@ -6,16 +6,15 @@
     </view>
     <scroll-view v-for="(item,index) in tourPublish " :key="index" class="t-page-content">
       <img class="my-title" src="@/static/z/images/title.jpg" alt="">
-      <span class="my-name">测试名称</span>
+      <span class="my-name">{{item.circleId}}</span>
       <span class="my-circle-time">{{item.circleTime}}</span>
       <p class="my-circle-introduction">{{item.circleContent}}</p>
-      <publish-grid class="publish-grid" :listImg="listImg"></publish-grid>
-<!--      <add-location class="setLocation"></add-location>-->
+      <publish-grid class="publish-grid" :listImg="getImg(index)"></publish-grid>
+      <span v-if="item.circleLocation!='定位地址'" class="set-location-content">{{item.circleLocation}}</span>
       <img class="like" @click="giveALike" src="@/static/z/images/like.png" alt="">
       <view class="split-line">
       </view>
     </scroll-view>
-
   </view>
 </template>
 
@@ -35,9 +34,13 @@
     components: {
       PublishButton,
       PublishGrid,
-      // addLocation
     },
     methods: {
+      getImg(index){
+        let pic = []
+        pic.push(this.tourPublish[index].circlePictures.split(',')[0])
+        return pic
+      },
       giveALike(){
       //  点赞
       },
@@ -56,9 +59,6 @@
           }).then(data => {
             let [err, res] = data
             this.tourPublish = res.data.data
-            let pic = this.tourPublish[0].circlePictures
-            console.log(pic.slice(0,pic.length-1));
-            this.listImg.push(pic.slice(0,pic.length-1))
           })
         })
 
@@ -69,7 +69,7 @@
         });
       }
     },
-    created() {
+    onShow() {
       this.getData()
     }
   }
@@ -129,15 +129,20 @@
     font-family:Source Han Sans CN;
     font-weight:bold;
     color:rgba(52,49,48,1);
-    margin: 0 0 10rpx 30rpx;
+    position: relative;
+    bottom: 10rpx;
+    left: 30rpx;
+    /*margin: 0 0 0 30rpx;*/
   }
   .my-circle-time{
-    width:255rpx;
+    width:275rpx;
     height:12rpx;
+
     font-size:12rpx;
     font-family:Source Han Sans CN;
     font-weight:bold;
     color:rgba(52,49,48,1);
+
     position: relative;
     float: right;
     margin-top: 49rpx;
@@ -148,7 +153,7 @@
     margin-top: 20rpx;
     width: 586rpx;
     font-size:24rpx;
-    font-weight:bold;
+    /*font-weight:bold;*/
     color:rgba(52,49,48,1);
   }
 
@@ -179,5 +184,22 @@
     border-radius:15px;
     position: relative;
     left: 119rpx;
+  }
+
+  .set-location-content{
+    display:inline-block;
+    width:187rpx;
+    height:30rpx;
+    background:rgba(241,235,226,1);
+
+    font-size:20rpx;
+    font-family:Source Han Sans CN;
+    font-weight:bold;
+    color:rgba(52,49,48,1);
+
+    position: relative;
+    bottom: 45rpx;
+    left: 119rpx;
+    overflow: hidden;
   }
 </style>

@@ -9,6 +9,10 @@
       "navigationStyle": "custom"
     },
     {
+      "path": "pages/tourismCircle/LogIn",
+      "navigationStyle": "custom"
+    },
+    {
       "path": "pages/index/index",
       "style": {
         "navigationBarTitleText": "uni-app"
