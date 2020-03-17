@@ -6,13 +6,11 @@
     </view>
     <scroll-view v-for="(item,index) in tourPublish " :key="index" class="t-page-content">
       <img class="my-title" src="@/static/z/images/title.jpg" alt="">
-      <span class="my-name">{{item.themeName}}</span>
-      <span class="my-circle-time">2020-03-04 16:00</span>
-      <p class="my-circle-introduction">安康寺是安昌古镇上一座规模颇大的寺庙，建筑显然是翻新的，宏伟壮观。</p>
+      <span class="my-name">测试名称</span>
+      <span class="my-circle-time">{{item.circleTime}}</span>
+      <p class="my-circle-introduction">{{item.circleContent}}</p>
       <publish-grid class="publish-grid" :listImg="listImg"></publish-grid>
-      <div class="setLocation">
-        <span class="setLocationContent">定位地址</span>
-      </div>
+<!--      <add-location class="setLocation"></add-location>-->
       <img class="like" @click="giveALike" src="@/static/z/images/like.png" alt="">
       <view class="split-line">
       </view>
@@ -23,44 +21,51 @@
 
 <script>
   import PublishButton from "@/components/tourismCircle/PublishButton";
-  import {getCurrentCircle} from "@/components/tourismCircle/request/request"
   import PublishGrid from "@/components/tourismCircle/PublishGrid";
 
+  import {aboutCircle} from "@/components/tourismCircle/request/request"
   export default {
     name: "TourismCircleHome",
     data() {
       return {
         tourPublish: [],
-        listImg: [
-          "http://img3m6.ddimg.cn/31/9/27916546-1_e_3.jpg",
-          "http://img3m6.ddimg.cn/31/9/27916546-2_e_3.jpg",
-          "http://img3m6.ddimg.cn/31/9/27916546-3_e_3.jpg",
-          "http://img3m6.ddimg.cn/31/9/27916546-4_e_3.jpg",
-          "http://img3m6.ddimg.cn/31/9/27916546-2_e_3.jpg",
-          "http://img3m6.ddimg.cn/31/9/27916546-3_e_3.jpg",
-          "http://img3m6.ddimg.cn/31/9/27916546-4_e_3.jpg"
-        ],
+        listImg:[]
       }
     },
     components: {
       PublishButton,
-      PublishGrid
+      PublishGrid,
+      // addLocation
     },
     methods: {
       giveALike(){
       //  点赞
       },
       getData() {
-        getCurrentCircle({
-          url: "/theme/getAllTheme",
-        }).then(data => {
-          let [err, res] = data
-          this.tourPublish = res.data.data
+        aboutCircle({
+          url: "/login",
+          method: "POST",
+          data: {
+            username: "z",
+            password: "123",
+          },
+          header: {"Content-Type": "application/x-www-form-urlencoded"}
+        }).then(data=>{
+          aboutCircle({
+            url: "/circle/getCurrentCircle",
+          }).then(data => {
+            let [err, res] = data
+            this.tourPublish = res.data.data
+            let pic = this.tourPublish[0].circlePictures
+            console.log(pic.slice(0,pic.length-1));
+            this.listImg.push(pic.slice(0,pic.length-1))
+          })
         })
+
       },
       gotoPublish(){
         uni.navigateTo({
-          url: 'TourismPublish?id=1&name=uniapp'
+          url: 'TourismPublish'
         });
       }
     },
@@ -174,16 +179,5 @@
     border-radius:15px;
     position: relative;
     left: 119rpx;
-  }
-  .setLocationContent{
-    width:83rpx;
-    height:19rpx;
-    font-size:20rpx;
-    font-family:Source Han Sans CN;
-    font-weight:bold;
-    color:rgba(52,49,48,1);
-    position: relative;
-    bottom: 15rpx;
-    left: 40rpx;
   }
 </style>

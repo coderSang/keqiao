@@ -62,7 +62,6 @@
           longPressActions: {
             itemList: ['保存图片'],
             success: function(data) {
-              // console.log('选中了第' + (data.tapIndex + 1) + '个按钮,第' + (data.index + 1) + '张图片');
               uni.saveImageToPhotosAlbum({
                 filePath: this.listImg[data.index],
                 success: function () {

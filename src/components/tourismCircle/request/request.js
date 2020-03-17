@@ -1,14 +1,13 @@
 const baseUrl = 'http://192.168.1.48:9498'
 
-export function getCurrentCircle(param) {
+export function aboutCircle(param) {
   //GET或POST
   if (param.method) {
     param.method = param.method.toUpperCase();//小写改为大写
   }
   let url = baseUrl + param.url,
     header = param.header,
-    data = param.data,
-    token = "";
+    data = param.data
 
   return uni.request({
     url,
@@ -16,4 +15,17 @@ export function getCurrentCircle(param) {
     header: header || {'content-type': "application/json"},
     data: data || {},
   })
+}
+
+export function uploadImage(params) {
+  let tempFilePaths =params.tempFilePaths,
+    url = baseUrl + params.url,
+    name = params.name,
+    formData = params.formData
+  return uni.uploadFile({
+    url:url, //仅为示例，非真实的接口地址
+    filePath:tempFilePaths,
+    name:name,
+    formData:formData
+  });
 }
