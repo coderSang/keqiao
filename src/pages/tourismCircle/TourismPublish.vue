@@ -46,51 +46,41 @@
         this.content = e.detail.value
       },
       addCircle(){
-        aboutCircle({
-          url: "/login",
-          method:"POST",
-          data:{
-            username:"z",
-            password:"123",
-          },
-          header:{"Content-Type": "application/x-www-form-urlencoded"}
-        }).then(data => {
-          if(this.files.length===0&& this.content ===""){
-            uni.showToast({
-              title: '内容不为空',
-              duration: 1000
-            });
-          }
-          else{
-            let tempFilePaths=this.files[0]
-            uploadImage({
-              url:'/circle/addCircle',
-              tempFilePaths:tempFilePaths,
-              name:"circlePicturesFiles",
-              formData: {
-                circleContent:this.content,
-                circleLocation:this.location
-              }
-            }).then(data=>{
-              let [err, res] = data
-              if(err!=null){
-                uni.showToast({
-                  title: '发布失败',
-                  duration: 1000
-                });
-              }
-              else {
-                uni.showToast({
-                  title: '发布成功',
-                  duration: 1000
-                });
-              }
-              uni.navigateTo({
-                url: 'TourismCircleHome'
+        if(this.files.length===0&& this.content ===""){
+          uni.showToast({
+            title: '内容不为空',
+            duration: 1000
+          });
+        }
+        else{
+          let tempFilePaths=this.files[0]
+          uploadImage({
+            url:'/circle/addCircle',
+            tempFilePaths:tempFilePaths,
+            name:"circlePicturesFiles",
+            formData: {
+              circleContent:this.content,
+              circleLocation:this.location
+            }
+          }).then(data=>{
+            let [err, res] = data
+            if(err!=null){
+              uni.showToast({
+                title: '发布失败',
+                duration: 1000
               });
-            })
-          }
-        })
+            }
+            else {
+              uni.showToast({
+                title: '发布成功',
+                duration: 1000
+              });
+            }
+            uni.navigateTo({
+              url: 'TourismCircleHome'
+            });
+          })
+        }
       },
       goBack(){
         uni.navigateBack({
@@ -114,7 +104,34 @@
             }
           }
         })
+      },
+      judgeLogin(){
+        if(this.$store.state.hasLogin===false){
+          uni.showModal({
+            title: '提示',
+            content: '发布新动态需登录',
+            success: function (res) {
+              if (res.confirm) {
+                uni.navigateTo({
+                  url: '/pages/login/LogIn'
+                });
+              } else if (res.cancel) {
+                uni.navigateTo({
+                  url: '/pages/tourismCircle/TourismCircleHome'
+                })
+              }
+            }
+          });
+        }
+        else{
+          uni.navigateTo({
+            url: '/pages/tourismCircle/TourismPublish'
+          });
+        }
       }
+    },
+    onShow(){
+      this.judgeLogin()
     }
   }
 </script>

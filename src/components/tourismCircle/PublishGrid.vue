@@ -2,23 +2,24 @@
   <view>
     <view v-if="listImg.length===1">
       <uni-grid :column="1" :show-border="false"  :square="false">
-        <uni-grid-item style="width: 100%;margin: 3%" v-for="(item,index) in listImg" :key="index">
+        <uni-grid-item style="width: 518rpx;height:518rpx;margin: 16rpx" v-for="(item,index) in listImg" :key="index">
           <img v-if="showDeleteButtom" @click="deleteImg(index)" class="delete-image" :src="getDeleteImg()" alt="">
-          <img @click="viewImg(index)" class="image-content" :src="item" alt="">
+          <img :mode="mode" @click="viewImg(index)" class="image-content" :src="item" alt="">
         </uni-grid-item>
       </uni-grid>
+
     </view>
     <view v-else-if="listImg.length===2||listImg.length===4">
       <uni-grid :column="2" :show-border="false" :square="false">
-        <uni-grid-item style="width: 46%;height:46%;margin: 2%" v-for="(item,index) in listImg" :key="index">
+        <uni-grid-item style="width: 250rpx;height:250rpx;margin: 12rpx" v-for="(item,index) in listImg" :key="index">
           <img v-if="showDeleteButtom" @click="deleteImg(index)" class="delete-image" :src="getDeleteImg()" alt="">
-          <img @click="viewImg(index)" class="image-content" :src="item" alt="">
+          <img :mode="mode" @click="viewImg(index)" class="image-content" :src="item" alt="">
         </uni-grid-item>
       </uni-grid>
     </view>
     <view v-else-if="listImg.length>4&&listImg.length<=9||listImg.length===3">
       <uni-grid :column="3" :show-border="false"  :square="false">
-        <uni-grid-item style="width: 29%;height:29%;margin: 2%" v-for="(item,index) in listImg" :key="index">
+        <uni-grid-item style="width: 160rpx;height:160rpx;margin: 10rpx" v-for="(item,index) in listImg" :key="index">
           <img v-if="showDeleteButtom" @click="deleteImg(index)" class="delete-image" :src="getDeleteImg()" alt="">
           <img @click="viewImg(index)" class="image-content" :src="item" alt="">
         </uni-grid-item>
@@ -45,7 +46,8 @@
       showDeleteButtom:{
         type:Boolean,
         default: false
-      }
+      },
+      mode:"center"
     },
     methods:{
       getDeleteImg(){
@@ -89,6 +91,5 @@
   .image-content{
     width: 100%;
     height:90%;
-    margin: auto;
   }
 </style>

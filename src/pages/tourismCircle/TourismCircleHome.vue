@@ -4,19 +4,6 @@
       <span class="t-page-head-title">分享你眼中的柯桥</span>
       <publish-button @click.native="gotoPublish" class="t-page-head-button"></publish-button>
     </view>
-
-<!--    <view v-for="(item,index) in tourPublish " :key="index" class="t-page-content">-->
-<!--        <img class="my-title" src="@/static/z/images/title.jpg" alt="">-->
-<!--        <span class="my-name">{{item.circleId}}</span>-->
-<!--        <span class="my-circle-time">{{item.circleTime}}</span>-->
-<!--        <p class="my-circle-introduction">{{item.circleContent}}</p>-->
-<!--        <publish-grid class="publish-grid" :listImg="getImg(index)"></publish-grid>-->
-<!--        <span v-if="item.circleLocation!='定位地址'" class="set-location-content">{{item.circleLocation}}</span>-->
-<!--        <img class="like" @click="giveALike" src="@/static/z/images/like.png" alt="">-->
-<!--        <view class="split-line">-->
-<!--        </view>-->
-<!--      </view>-->
-
     <view class="uni-list">
       <view v-for="(item,index) in tourPublish " :key="index" class="t-page-content">
         <img class="my-title" :src="item.circleUserAvatar" alt="">
@@ -29,8 +16,7 @@
         <view class="split-line"></view>
       </view>
     </view>
-    <uni-load-more :status="status"  :icon-size="16" :content-text="contentText" />
-
+    <uni-load-more style="margin-top: 100rpx;" :status="status"  :icon-size="16" :content-text="contentText" />
 
   </view>
 </template>
@@ -39,9 +25,12 @@
   import PublishButton from "@/components/tourismCircle/PublishButton";
   import PublishGrid from "@/components/tourismCircle/PublishGrid";
   import uniLoadMore from '@/components/uni-load-more/uni-load-more.vue';
-  var dateUtils = require('../../common/util.js').dateUtils;
 
   import {aboutCircle} from "@/components/tourismCircle/request/request"
+
+  var dateUtils = require('../../common/util.js').dateUtils;
+
+
   export default {
     name: "TourismCircleHome",
     data() {
@@ -49,9 +38,6 @@
         tourPublish: [],
         listImg:[],
         currentPage:1,
-        banner: {},
-        listData: [],
-        last_id: '',
         reload: false,
         status: 'more',
         contentText: {
@@ -69,44 +55,24 @@
     methods: {
       getImg(index){
         let pic = []
-        pic.push(this.tourPublish[index].circlePictures.split(',')[0])
+        pic = (this.tourPublish[index].circlePictures.split(','))
+        pic.pop()
         return pic
       },
       giveALike(){
       //  点赞
       },
-      getBanner() {
-        let currentPage = this.currentPage
-
-        aboutCircle({
-          url: "/circle/getCurrentCircle",
-          data:{
-            currentPage
-          }
-        }).then(data => {
-          let [err, res] = data
-          if(res.data.code==="SUCCESS"){
-            uni.stopPullDownRefresh();
-            this.tourPublish = res.data.data
-          }else{
-            console.log('fail' + JSON.stringify(res.data));
-          }
-        })
-      },
       gotoPublish(){
         uni.navigateTo({
-          url: 'TourismPublish'
+          url: '/pages/tourismCircle/TourismPublish'
         });
       },
       getList() {
-        var data = {
-          column: 'circleUserAvatar,circleUserName,circleTime,circleContent,circlePictures' //需要的字段名
-        };
         let currentPage = this.currentPage
+        let _self = this
         if (this.currentPage>1) {
           //说明已有数据，目前处于上拉加载
           this.status = 'loading';
-          // data.currentPage = currentPage;
         }
         aboutCircle({
           url: "/circle/getCurrentCircle",
@@ -116,11 +82,16 @@
         }).then(data => {
           let [err, res] = data
           if(res.data.code==="SUCCESS"){
-            let list = this.setTime(res.data.data);
-            this.tourPublish = this.reload ? list : this.tourPublish.concat(list);
-            this.currentPage+=1;
-            this.reload = false;
-            uni.stopPullDownRefresh();
+            if(res.data.data.length===0){
+              _self.status = 'nomore';
+            }
+            else{
+              let list = this.setTime(res.data.data);
+              this.tourPublish = this.reload ? list : this.tourPublish.concat(list);
+              this.currentPage+=1;
+              this.reload = false;
+              uni.stopPullDownRefresh();
+            }
           }else{
             console.log('fail' + JSON.stringify(res.data));
           }
@@ -130,24 +101,26 @@
         var newItems = [];
         items.forEach(e => {
           newItems.push({
+            circleId:e.circleId,
+            circleUserId:e.circleUserId,
             circleUserAvatar: e.circleUserAvatar,
             circleUserName: e.circleUserName,
             circleTime: e.circleTime,
+            circleLikeNum:e.circleLikeNum,
             circleContent: e.circleContent,
-            circlePictures: e.circlePictures
+            circlePictures: e.circlePictures,
+            circleLocation:e.circleLocation
           });
         });
         return newItems;
       }
     },
     onLoad() {
-      this.getBanner();
       this.getList();
     },
     onPullDownRefresh() {
       this.reload = true;
       this.currentPage=1;
-      this.getBanner();
       this.getList();
     },
     onReachBottom() {
@@ -218,10 +191,11 @@
     /*margin: 0 0 0 30rpx;*/
   }
   .my-circle-time{
-    width:275rpx;
+    width:285rpx;
     height:12rpx;
 
     font-size:12rpx;
+    text-align: right;
     font-family:Source Han Sans CN;
     font-weight:bold;
     color:rgba(52,49,48,1);
@@ -244,6 +218,7 @@
     position: relative;
     left: 124rpx;
     width: 550rpx;
+
   }
 
   .split-line{
@@ -251,12 +226,14 @@
     height:2rpx;
     background: rgba(0, 0, 0,0.2);
     box-shadow:0rpx 0rpx 25rpx 2rpx rgba(232,232,232,1);
+    margin-top: 59rpx;;
   }
   .like{
     width: 121rpx;
     height: 59rpx;
     position: relative;
-    left:596rpx;
+    float: right;
+    /*left:596rpx;*/
   }
   .setLocation{
     width:187rpx;
@@ -277,11 +254,12 @@
 
     font-size:20rpx;
     font-family:Source Han Sans CN;
+    text-align: center;
     font-weight:bold;
     color:rgba(52,49,48,1);
 
     position: relative;
-    bottom: 45rpx;
+    /*bottom: 45rpx;*/
     left: 119rpx;
     overflow: hidden;
   }

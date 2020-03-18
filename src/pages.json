@@ -2,14 +2,17 @@
   "pages": [
     {
       "path": "pages/tourismCircle/TourismCircleHome",
-      "navigationStyle": "custom"
+      "navigationStyle": "custom",
+      "style":{
+        "enablePullDownRefresh": true
+        }
     },
     {
       "path": "pages/tourismCircle/TourismPublish",
       "navigationStyle": "custom"
     },
     {
-      "path": "pages/tourismCircle/LogIn",
+      "path": "pages/login/LogIn",
       "navigationStyle": "custom"
     },
     {

@@ -62,12 +62,12 @@
                 title: '登录成功',
                 duration: 1000
               });
+              this.$store.commit('login',username)
               uni.navigateBack({
                 delta: 1
               });
             }
           }
-          console.log(data)
           })
 
       },
