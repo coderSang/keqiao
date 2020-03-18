@@ -4,23 +4,42 @@
       <span class="t-page-head-title">分享你眼中的柯桥</span>
       <publish-button @click.native="gotoPublish" class="t-page-head-button"></publish-button>
     </view>
-    <scroll-view v-for="(item,index) in tourPublish " :key="index" class="t-page-content">
-      <img class="my-title" src="@/static/z/images/title.jpg" alt="">
-      <span class="my-name">{{item.circleId}}</span>
-      <span class="my-circle-time">{{item.circleTime}}</span>
-      <p class="my-circle-introduction">{{item.circleContent}}</p>
-      <publish-grid class="publish-grid" :listImg="getImg(index)"></publish-grid>
-      <span v-if="item.circleLocation!='定位地址'" class="set-location-content">{{item.circleLocation}}</span>
-      <img class="like" @click="giveALike" src="@/static/z/images/like.png" alt="">
-      <view class="split-line">
+
+<!--    <view v-for="(item,index) in tourPublish " :key="index" class="t-page-content">-->
+<!--        <img class="my-title" src="@/static/z/images/title.jpg" alt="">-->
+<!--        <span class="my-name">{{item.circleId}}</span>-->
+<!--        <span class="my-circle-time">{{item.circleTime}}</span>-->
+<!--        <p class="my-circle-introduction">{{item.circleContent}}</p>-->
+<!--        <publish-grid class="publish-grid" :listImg="getImg(index)"></publish-grid>-->
+<!--        <span v-if="item.circleLocation!='定位地址'" class="set-location-content">{{item.circleLocation}}</span>-->
+<!--        <img class="like" @click="giveALike" src="@/static/z/images/like.png" alt="">-->
+<!--        <view class="split-line">-->
+<!--        </view>-->
+<!--      </view>-->
+
+    <view class="uni-list">
+      <view v-for="(item,index) in tourPublish " :key="index" class="t-page-content">
+        <img class="my-title" :src="item.circleUserAvatar" alt="">
+        <span class="my-name">{{item.circleUserName}}</span>
+        <span class="my-circle-time">{{item.circleTime}}</span>
+        <p class="my-circle-introduction">{{item.circleContent}}</p>
+        <publish-grid class="publish-grid" :listImg="getImg(index)"></publish-grid>
+        <span v-if="item.circleLocation!='定位地址'" class="set-location-content">{{item.circleLocation}}</span>
+        <img class="like" @click="giveALike" src="@/static/z/images/like.png" alt="">
+        <view class="split-line"></view>
       </view>
-    </scroll-view>
+    </view>
+    <uni-load-more :status="status"  :icon-size="16" :content-text="contentText" />
+
+
   </view>
 </template>
 
 <script>
   import PublishButton from "@/components/tourismCircle/PublishButton";
   import PublishGrid from "@/components/tourismCircle/PublishGrid";
+  import uniLoadMore from '@/components/uni-load-more/uni-load-more.vue';
+  var dateUtils = require('../../common/util.js').dateUtils;
 
   import {aboutCircle} from "@/components/tourismCircle/request/request"
   export default {
@@ -28,12 +47,24 @@
     data() {
       return {
         tourPublish: [],
-        listImg:[]
+        listImg:[],
+        currentPage:1,
+        banner: {},
+        listData: [],
+        last_id: '',
+        reload: false,
+        status: 'more',
+        contentText: {
+          contentdown: '上拉加载更多',
+          contentrefresh: '加载中',
+          contentnomore: '没有更多'
+        }
       }
     },
     components: {
       PublishButton,
       PublishGrid,
+      uniLoadMore
     },
     methods: {
       getImg(index){
@@ -44,34 +75,85 @@
       giveALike(){
       //  点赞
       },
-      getData() {
-        aboutCircle({
-          url: "/login",
-          method: "POST",
-          data: {
-            username: "z",
-            password: "123",
-          },
-          header: {"Content-Type": "application/x-www-form-urlencoded"}
-        }).then(data=>{
-          aboutCircle({
-            url: "/circle/getCurrentCircle",
-          }).then(data => {
-            let [err, res] = data
-            this.tourPublish = res.data.data
-          })
-        })
+      getBanner() {
+        let currentPage = this.currentPage
 
+        aboutCircle({
+          url: "/circle/getCurrentCircle",
+          data:{
+            currentPage
+          }
+        }).then(data => {
+          let [err, res] = data
+          if(res.data.code==="SUCCESS"){
+            uni.stopPullDownRefresh();
+            this.tourPublish = res.data.data
+          }else{
+            console.log('fail' + JSON.stringify(res.data));
+          }
+        })
       },
       gotoPublish(){
         uni.navigateTo({
           url: 'TourismPublish'
         });
+      },
+      getList() {
+        var data = {
+          column: 'circleUserAvatar,circleUserName,circleTime,circleContent,circlePictures' //需要的字段名
+        };
+        let currentPage = this.currentPage
+        if (this.currentPage>1) {
+          //说明已有数据，目前处于上拉加载
+          this.status = 'loading';
+          // data.currentPage = currentPage;
+        }
+        aboutCircle({
+          url: "/circle/getCurrentCircle",
+          data:{
+            currentPage
+          }
+        }).then(data => {
+          let [err, res] = data
+          if(res.data.code==="SUCCESS"){
+            let list = this.setTime(res.data.data);
+            this.tourPublish = this.reload ? list : this.tourPublish.concat(list);
+            this.currentPage+=1;
+            this.reload = false;
+            uni.stopPullDownRefresh();
+          }else{
+            console.log('fail' + JSON.stringify(res.data));
+          }
+        })
+      },
+      setTime: function(items) {
+        var newItems = [];
+        items.forEach(e => {
+          newItems.push({
+            circleUserAvatar: e.circleUserAvatar,
+            circleUserName: e.circleUserName,
+            circleTime: e.circleTime,
+            circleContent: e.circleContent,
+            circlePictures: e.circlePictures
+          });
+        });
+        return newItems;
       }
     },
-    onShow() {
-      this.getData()
-    }
+    onLoad() {
+      this.getBanner();
+      this.getList();
+    },
+    onPullDownRefresh() {
+      this.reload = true;
+      this.currentPage=1;
+      this.getBanner();
+      this.getList();
+    },
+    onReachBottom() {
+      this.status = 'more';
+      this.getList();
+    },
   }
 </script>
 
@@ -121,6 +203,7 @@
   }
   .my-title{
     width: 78.4rpx;
+    margin-top: 20rpx;;
   }
   .my-name{
     width:113rpx;
@@ -130,7 +213,7 @@
     font-weight:bold;
     color:rgba(52,49,48,1);
     position: relative;
-    bottom: 10rpx;
+    bottom: 20rpx;
     left: 30rpx;
     /*margin: 0 0 0 30rpx;*/
   }
