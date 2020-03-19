@@ -1,5 +1,5 @@
 const baseUrl = 'http://192.168.1.48:9498'
-
+import store from "@/store";
 export function aboutCircle(param) {
   //GET或POST
   if (param.method) {

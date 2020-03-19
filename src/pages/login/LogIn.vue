@@ -1,13 +1,13 @@
 <template>
   <view>
-    <view class="p-page-head">
-      <img @click="goBack" class="left-back" src="@/static/z/images/left.png" alt="">
-    </view>
-    <view class="welcome">
-      登陆后更精彩
-    </view>
-    <input class="input-box" placeholder="请输入用户名" @input="nameInput">
-    <input class="input-box" placeholder="请输入密码" @input="pwInput" password="true">
+    <nav-bar >
+      <div slot="left">
+        <img @click="goBack" class="left-back" src="@/static/tourismCircle/images/left.png" alt="">
+      </div>
+    </nav-bar>
+    <view class="welcome">登陆后更精彩</view>
+    <input class="input-box i-box" placeholder="请输入用户名" @input="nameInput">
+    <input class="input-box i-box" placeholder="请输入密码" @input="pwInput" password="true">
     <button class="input-box loginBtn" value="确认"  @click="getLogin">确认</button>
     <div class="register">注册</div>
   </view>
@@ -15,6 +15,8 @@
 </template>
 
 <script>
+  import NavBar from "@/components/navbar/NavBar";
+
   import {aboutCircle} from "@/components/tourismCircle/request/request"
   export default {
     name: "LogIn",
@@ -23,6 +25,9 @@
         username:"",
         password:""
       }
+    },
+    components:{
+      NavBar
     },
     methods:{
       nameInput(e){
@@ -43,33 +48,10 @@
           },
           header:{"Content-Type": "application/x-www-form-urlencoded"}
         }).then(data =>{
-          let [err, res] = data
-          if(err!=null){
-            uni.showToast({
-              title: '出现错误',
-              duration: 1000
-            });
+          if(this.showBar(data)){
+            this.$store.commit('login',username)
           }
-          else{
-            if (res.data.code==="FAIL"){
-              uni.showToast({
-                title: res.data.message,
-                duration: 1000
-              });
-            }
-            else{
-              uni.showToast({
-                title: '登录成功',
-                duration: 1000
-              });
-              this.$store.commit('login',username)
-              uni.navigateBack({
-                delta: 1
-              });
-            }
-          }
-          })
-
+        })
       },
       goBack(){
         uni.navigateBack({
@@ -81,18 +63,9 @@
 </script>
 
 <style scoped>
-  .p-page-head {
-    /*height: 128rpx;*/
-    height: 86rpx;
-    width: 100vw;
-    color: #343130;
-  }
   .left-back{
     width: 22rpx;
     height: 44rpx;
-    position: relative;
-    left: 44rpx;
-    top:20rpx
   }
   .welcome{
     width:273rpx;
@@ -102,8 +75,8 @@
     color:rgba(52,49,48,1);
 
     position: relative;
+    top:106rpx;
     left: 93rpx;
-    margin: 60rpx 0;
   }
   .input-box{
     width:559rpx;
@@ -113,12 +86,17 @@
     border-radius:34rpx;
 
     position: relative;
-    left:95rpx ;
-    margin: 50rpx 0;
+
+    top:200rpx;
+    margin-top: 30rpx;
 
     text-align: center;
   }
-  
+
+  .i-box{
+    left:95rpx ;
+  }
+
   .loginBtn{
     background-color: #c71c1d;
     height: 80rpx;
@@ -134,5 +112,6 @@
     position: relative;
     float: right;
     right: 100rpx;
+    top:250rpx;
   }
 </style>

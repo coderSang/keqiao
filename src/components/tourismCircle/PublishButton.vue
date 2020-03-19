@@ -1,6 +1,6 @@
 <template>
-  <view>
-    <img class="t-page-head-button-bg" src="/static/z/images/page-head-button.png" alt="">
+  <view class="btn">
+    <img class="t-page-head-button-bg" src="/static/tourismCircle/images/page-head-button.png" alt="">
     <span class="t-page-head-button-content">发布</span>
   </view>
 </template>
@@ -12,7 +12,10 @@
 </script>
 
 <style scoped>
-
+  .btn{
+    width: 121rpx;
+    height: 62rpx;
+  }
   .t-page-head-button-bg{
     width: 100%;
     height: 100%;

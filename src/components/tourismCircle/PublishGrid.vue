@@ -51,7 +51,7 @@
     },
     methods:{
       getDeleteImg(){
-        return require('@/static/z/images/delete.png')
+        return require('@/static/tourismCircle/images/delete.png')
       },
       deleteImg(index){
         this.listImg.splice(index,1)
