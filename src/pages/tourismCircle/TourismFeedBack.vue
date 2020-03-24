@@ -97,8 +97,4 @@
     top:50rpx;
   }
 
-  .left-back{
-    width: 22rpx;
-    height: 44rpx;
-  }
 </style>

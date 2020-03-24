@@ -48,8 +48,9 @@
           },
           header:{"Content-Type": "application/x-www-form-urlencoded"}
         }).then(data =>{
+          const userid = data[1].data.data.userId
           if(this.showBar(data)){
-            this.$store.commit('login',username)
+            this.$store.commit('login',{username,userid})
           }
         })
       },

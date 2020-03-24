@@ -1,6 +1,5 @@
 <template>
   <view>
-
     <nav-bar class="circle-home">
       <div slot="center">分享你眼中的柯桥</div>
       <div slot="right">
@@ -33,8 +32,7 @@
     onshow(){
       this.$refs.content.reload = true;
       this.$refs.content.currentPage=1;
-      this.$refs.content.isProfilePage=0;
-
+      this.$refs.content.isProfilePage='0';
       this.$refs.content.getList();
     },
     mounted(){

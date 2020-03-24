@@ -2,13 +2,19 @@
   <view class="tourism-circle">
     <view class="uni-list">
       <view v-for="(item,index) in tourPublish " :key="index" class="t-page-content">
-        <img class="my-title" @click="viewCircle(item.circleId,item.circleUserId)" @longpress="longPress(item.circleId,item.circleUserId)" :src="item.circleUserAvatar" alt="">
+        <img class="my-title" @click="viewCircle(item.circleId,item.circleUserId,item.circleUserName)" @longpress="longPress(item.circleId,item.circleUserId)" :src="item.circleUserAvatar" alt="">
         <span class="my-name">{{item.circleUserName}}</span>
         <span class="my-circle-time">{{item.circleTime}}</span>
         <p class="my-circle-introduction">{{item.circleContent}}</p>
         <publish-grid class="publish-grid" :listImg="getImg(index)"></publish-grid>
         <span v-if="item.circleLocation!='定位地址'" class="set-location-content">{{item.circleLocation}}</span>
-        <img class="like" @click="giveALike" src="@/static/tourismCircle/images/like.png" alt="">
+        <view v-if="myCircle(item.circleUserId)" class="give-like">
+          <img class="like" @click="deleteCircle(item.circleId)" src="@/static/tourismCircle/images/circleDelete.png" alt="">
+        </view>
+        <view v-else class="give-like" >
+          <span class="like-num">{{item.circleLikeNum}}</span>
+          <img class="like" @click="giveALike(index)" src="@/static/tourismCircle/images/like.png" alt="">
+        </view>
         <view class="split-line"></view>
       </view>
     </view>
@@ -27,19 +33,28 @@
     name: "CircleContent",
     data() {
       return {
+        //返回数据
         tourPublish: [],
-        listImg:[],
+        //当前页
         currentPage:1,
+        //重载
         reload: false,
+        //状态
         status: 'more',
+        //状态信息
         contentText: {
           contentdown: '上拉加载更多',
           contentrefresh: '加载中',
           contentnomore: '没有更多'
         },
+        //个人界面的信息
+        //isProfilePage判断是不是个人界面
+        //isMyCircle判断是不是本人界面
+        isMyCircle:0,
         isProfilePage:0,
         profileAttr:{
-          uid:""
+          uid:"",
+          name:"",
         }
       }
     },
@@ -49,14 +64,22 @@
       uniLoadMore
     },
     methods: {
+      myCircle(userId){
+        /*
+            author: z
+            time: 2020/3/20
+            function:判断是不是自己的内容
+        */
+        return this.$store.state.userId===userId
+      },
       getImg(index){
         let pic = []
         pic = (this.tourPublish[index].circlePictures.split(','))
         pic.pop()
         return pic
       },
-      giveALike(){
-        //  点赞
+      giveALike(index){
+        this.tourPublish[index].circleLikeNum++;
       },
       gotoPublish(){
         uni.navigateTo({
@@ -97,6 +120,7 @@
         }
         //特定id的旅游圈
         else{
+          let currentPage = this.currentPage
           let userId = this.profileAttr.uid
           let _self = this
           if (this.currentPage>1) {
@@ -106,7 +130,8 @@
           aboutCircle({
             url: "/circle/getCircleByUserId",
             data:{
-              userId
+              userId,
+              currentPage
             }
           }).then(data => {
             let [err, res] = data
@@ -127,7 +152,6 @@
           })
         }
       },
-
       setTime: function(items) {
         var newItems = [];
         items.forEach(e => {
@@ -159,14 +183,61 @@
           }
         });
       },
-      viewCircle(circleId,circleUserId){
-        if(this.isProfilePage===0){
-          let targetUrl = "/pages/tourismCircle/TourismCircleProfile?uid="+circleUserId
-          uni.navigateTo({
-            url: targetUrl
-          });
+      viewCircle(circleId,circleUserId,circleUserName){
+        if(this.checkLogin('查看个人信息需登录','/pages/tourismCircle/TourismCircleHome')){
+          if(this.isProfilePage===0){
+            let targetUrl = "/pages/tourismCircle/TourismCircleProfile?uid="+circleUserId+"&circleUserName="+circleUserName
+            uni.navigateTo({
+              url: targetUrl
+            });
+          }
         }
+      },
+      deleteCircle(circleId){
+        /*
+            author: z
+            time: 2020/3/20
+            function:删除自己的朋友圈
+        */
+        aboutCircle({
+          url: "/circle/deleteCircle",
+          data:{
+            circleId:parseInt(circleId)
+          }
+        }).then(data => {
+          let [err, res] = data
+          //报错
+          if(err!=null){
+            uni.showToast({
+              title: res.data.message,
+              duration: 1000,
+              icon:"none"
+            });
+          }
+          else{
+            //失败
+            if (res.data.code==="FAIL"){
+              uni.showToast({
+                title: res.data.message,
+                duration: 1000,
+                icon:"none"
+              });
+            }
+            //成功
+            else{
+              uni.showToast({
+                title: res.data.message,
+                duration: 1000,
+                icon:"none"
+              });
+              this.reload = true;
+              this.currentPage=1;
+              this.getList();
+            }
+          }
+        })
       }
+
     },
   }
 </script>
@@ -233,13 +304,23 @@
     position: relative;
     top:59rpx;
   }
-  .like{
-    width: 121rpx;
-    height: 59rpx;
+  .give-like{
     position: relative;
     float: right;
+    right: 20rpx;
   }
-
+  .like{
+    width: 38rpx;
+    height: 38rpx;
+    position: relative;
+    right: 10rpx;
+  }
+  .like-num{
+    float: right;
+    position: relative;
+    color: #828285;
+    font-size: 30rpx;
+  }
   .set-location-content{
     display:inline-block;
     width:187rpx;

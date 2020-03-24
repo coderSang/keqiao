@@ -1,7 +1,7 @@
 <template>
   <view class="tourism-circle">
     <nav-bar class="circle-home">
-      <div slot="center">TA眼中的柯桥</div>
+      <div slot="center">{{name}}眼中的柯桥</div>
       <div slot="left">
         <back-img></back-img>
       </div>
@@ -21,6 +21,11 @@
       NavBar,
       BackImg
     },
+    data(){
+      return{
+        name:"TA"
+      }
+    },
     methods:{
       goBack(){
         uni.navigateTo({
@@ -29,11 +34,22 @@
       },
     },
     mounted(){
-      if(this.checkLogin('查看个人信息需登录','/pages/tourismCircle/TourismCircleHome')){
-        this.$refs.content.profileAttr.uid = this.$route.query.uid
+      this.$refs.content.profileAttr.uid = this.$route.query.uid
+      //将名字转换成大写对比是不是一样的
+      //标题栏 我眼中/xxx眼中
+      let name = this.$route.query.circleUserName
+      let NAME = name.toLocaleUpperCase()
+      let username = this.$store.state.loginProvider
+      let USERNAME = username.toLocaleUpperCase()
+      this.name = (NAME===USERNAME)?"我":name
+      //进入到个人界面
+      if(NAME===USERNAME){
         this.$refs.content.isProfilePage = 1
-        this.$refs.content.getList()
       }
+      //传到子组件
+      this.$refs.content.profileAttr.name = this.$route.query.circleUserName
+      this.$refs.content.isProfilePage = 1
+      this.$refs.content.getList()
     },
     onPullDownRefresh() {
       this.$refs.content.reload = true;
@@ -41,8 +57,8 @@
       this.$refs.content.getList();
     },
     onReachBottom() {
-      this.$refs.content.status = 'more';
-      this.$refs.content.getList();
+      this.$refs.content.status = 'more'
+      this.$refs.content.getList()
     },
   }
 </script>
@@ -55,9 +71,6 @@
     width: 100vw;
     height: calc(100% - 7.3%);
   }
-  .left-back{
-    width: 22rpx;
-    height: 44rpx;
-  }
+
 </style>
 

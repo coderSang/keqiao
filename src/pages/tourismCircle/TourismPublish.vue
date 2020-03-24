@@ -104,10 +104,6 @@
 </script>
 
 <style scoped>
-  .left-back{
-    width: 22rpx;
-    height: 44rpx;
-  }
   .input-contenet{
     width: 600rpx;
     position: relative;

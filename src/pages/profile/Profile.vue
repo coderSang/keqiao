@@ -10,9 +10,15 @@
     methods:{
       //跳转到我的旅游圈
       mycircle(){
-        uni.navigateTo({
-          url: "/pages/tourismCircle/TourismCircleProfile"
-        });
+        if(this.checkLogin('查看个人信息需登录','/pages/profile/Profile')) {
+          let name = this.$store.state.loginProvider
+          let id = this.$store.state.userId
+          let targetUrl = "/pages/tourismCircle/TourismCircleProfile?uid="+id+"&circleUserName="+name
+          uni.navigateTo({
+            url: targetUrl
+          });
+        }
+
       }
     }
   }

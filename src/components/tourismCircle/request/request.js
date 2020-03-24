@@ -23,7 +23,7 @@ export function uploadImage(params) {
     name = params.name,
     formData = params.formData
   return uni.uploadFile({
-    url:url, //仅为示例，非真实的接口地址
+    url:url,
     filePath:tempFilePaths,
     name:name,
     formData:formData
