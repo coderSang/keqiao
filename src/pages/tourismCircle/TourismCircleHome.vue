@@ -1,12 +1,16 @@
 <template>
-  <view>
+  <view class="tabs">
+	<view class="status_bar"></view>
     <nav-bar class="circle-home">
       <div slot="center">分享你眼中的柯桥</div>
       <div slot="right">
         <publish-button @click.native="gotoPublish" ></publish-button>
       </div>
     </nav-bar>
-    <circle-content ref="content" ></circle-content>
+	<view>
+		<circle-content ref="content" ></circle-content>
+	</view>
+    
   </view>
 </template>
 
@@ -53,5 +57,8 @@
 <style scoped>
   .circle-home{
     box-shadow: 0 6rpx 15rpx 0 rgba(85, 70, 59, 0.23);
+  }
+  .tabs{
+  	padding-top: var(--status-bar-height);
   }
 </style>

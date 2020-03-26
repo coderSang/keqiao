@@ -1,5 +1,5 @@
 <template>
-  <img @click="goBack" class="left-back" src="@/static/tourismCircle/images/left.png" alt="">
+  <div class='left-back' @click="goBack"></div>
 </template>
 
 <script>
@@ -7,8 +7,8 @@
     name: "BackImg",
     methods: {
       goBack() {
-        uni.navigateTo({
-          url: "/pages/tourismCircle/TourismCircleHome"
+        uni.switchTab({
+			url: "/pages/tourismCircle/TourismCircleHome"
         })
       },
     }
@@ -17,7 +17,11 @@
 
 <style scoped>
   .left-back {
+	position: relative;
+	left: 15rpx;
     width: 22rpx;
     height: 44rpx;
+	background: url('../../static/tourismCircle/images/left.png') center center no-repeat ;
+	background-size:22rpx 44rpx;
   }
 </style>

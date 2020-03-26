@@ -1,7 +1,6 @@
 <template>
   <view class="btn">
-    <img class="t-page-head-button-bg" src="/static/tourismCircle/images/page-head-button.png" alt="">
-    <span class="t-page-head-button-content">发布</span>
+    <div class="t-page-head-button-bg"></div>
   </view>
 </template>
 
@@ -17,9 +16,10 @@
     height: 62rpx;
   }
   .t-page-head-button-bg{
-    width: 100%;
-    height: 100%;
+    width: 121rpx;
+    height: 62rpx;
     border:0;
+	 background: url('../../static/tourismCircle/images/page-head-button.png') center center no-repeat;
   }
   .t-page-head-button-content{
     color: #FFF;

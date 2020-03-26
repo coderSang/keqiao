@@ -1,5 +1,6 @@
 <template>
-  <view class="tourism-circle">
+  <view class="tourism-circle tabs">
+	<view class="status_bar"></view>
     <nav-bar class="circle-home">
       <div slot="center">{{name}}眼中的柯桥</div>
       <div slot="left">
@@ -28,7 +29,7 @@
     },
     methods:{
       goBack(){
-        uni.navigateTo({
+        uni.switchTab({
           url:"/pages/tourismCircle/TourismCircleHome"
         })
       },
@@ -71,6 +72,8 @@
     width: 100vw;
     height: calc(100% - 7.3%);
   }
-
+	.tabs{
+		padding-top: var(--status-bar-height);
+	}
 </style>
 

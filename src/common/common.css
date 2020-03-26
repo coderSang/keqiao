@@ -1,0 +1,21 @@
+/* 状态栏高度的css变量 */
+.status_bar {
+      /* height: var(--status-bar-height);
+      width: 100%;
+	  background-color: #1AAD19;
+	  z-index: 99999; */
+	  height: var(--status-bar-height);
+	  width: 100%;
+	  background-color: #09BB07;
+	  position: fixed;
+	  z-index: 99999999;
+	  top: 0;
+  }
+
+.row {
+	flex-direction: row;
+}
+
+.column {
+	flex-direction: column;
+}

@@ -9,12 +9,14 @@
         <publish-grid class="publish-grid" :listImg="getImg(index)"></publish-grid>
         <span v-if="item.circleLocation!='定位地址'" class="set-location-content">{{item.circleLocation}}</span>
         <view v-if="myCircle(item.circleUserId)" class="give-like">
-          <img class="like" @click="deleteCircle(item.circleId)" src="@/static/tourismCircle/images/circleDelete.png" alt="">
+          <!-- <img class="like" @click="deleteCircle(item.circleId)" src="@/static/tourismCircle/images/circleDelete.png" alt=""> -->
+          <div class="unlike" @click="deleteCircle(item.circleId)"></div>
         </view>
         <view v-else class="give-like" >
           <span class="like-num">{{item.circleLikeNum}}</span>
-          <img class="like" @click="giveALike(index)" src="@/static/tourismCircle/images/like.png" alt="">
-        </view>
+          <!-- <img class="like" @click="giveALike(index)" src="@/static/tourismCircle/images/like.png" alt=""> -->
+			<div class="like" @click="giveALike(index)" ></div>
+		</view>
         <view class="split-line"></view>
       </view>
     </view>
@@ -251,11 +253,14 @@
   .t-page-content{
     position: relative;
     top: 120rpx;
-    margin: 0rpx 15rpx 50rpx 15rpx;
+	margin-bottom: 50rpx;
+    /* margin: 0rpx 15rpx 50rpx 15rpx; */
   }
   .my-title{
     width: 78.4rpx;
-    margin-top: 20rpx;;
+    margin-top: 20rpx;
+	position: relative;
+	left: 15rpx;
   }
   .my-name{
     width:113rpx;
@@ -271,14 +276,15 @@
     width:285rpx;
     height:12rpx;
 
-    font-size:12rpx;
+    font-size:20rpx;
     text-align: right;
     font-weight:bold;
     color:rgba(52,49,48,1);
 
     position: relative;
     float: right;
-    top:40rpx
+    top:40rpx;
+	right:15rpx
   }
 
   .my-circle-introduction{
@@ -308,12 +314,24 @@
     position: relative;
     float: right;
     right: 20rpx;
+
   }
   .like{
     width: 38rpx;
     height: 38rpx;
     position: relative;
-    right: 10rpx;
+    right: 20rpx;
+	background: url('../../static/tourismCircle/images/like.png') center center no-repeat ;
+	background-size:38rpx 38rpx;
+  }
+  .unlike{
+	  width: 38rpx;
+	  height: 38rpx;
+	  position: relative;
+	  right: 20rpx;
+	  background: url('../../static/tourismCircle/images/circleDelete.png') center center no-repeat ;
+	  background-size:38rpx 38rpx;
+	  
   }
   .like-num{
     float: right;

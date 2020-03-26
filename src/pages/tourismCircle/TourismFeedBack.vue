@@ -35,7 +35,7 @@
     methods:{
       //返回
       goback(){
-        uni.navigateTo({
+        uni.uni.switchTab({
           url:"/pages/tourismCircle/TourismCircleHome"
         })
       },

@@ -1,5 +1,6 @@
 <template>
-  <view>
+  <view class="tabs">
+	 <view class="status_bar"></view>
     <nav-bar>
       <div slot="left">
         <back-img></back-img>
@@ -7,7 +8,8 @@
     </nav-bar>
     <textarea class="input-contenet" @input="inputChange" auto-height="true" type="text" placeholder="说说您眼中的柯桥..."></textarea>
     <publish-grid class="publish-grid" :listImg="files" :showDeleteButtom="true"></publish-grid>
-    <img class="addImg" src="@/static/tourismCircle/images/add.png" @click="getImgs" alt="">
+    <!-- <img class="addImg" src="@/static/tourismCircle/images/add.png" @click="getImgs" alt=""> -->
+	<div class='addImg'></div>
     <view @click="setLocation" class="set-location">
       <span class="set-location-content">{{location}}</span>
     </view>
@@ -22,6 +24,8 @@
   import BackImg from "@/components/tourismCircle/BackImg";
 
   import {aboutCircle,uploadImage} from "@/components/tourismCircle/request/request"
+  var common = require('../../common/common.js');
+  
   export default {
     name: "TourismPublish",
     components: {
@@ -32,6 +36,7 @@
     },
     data(){
       return {
+		  common:common,
         files:[],
         content:"",
         location:"定位地址"
@@ -74,8 +79,9 @@
         }
       },
       goBack(){
-        uni.navigateTo({
-          url:"/pages/tourismCircle/TourismCircleHome"
+		  console.log("goback")
+        uni.switchTab({
+          url:"/TourismCircleHome"
         })
       },
       getImgs(){
@@ -104,6 +110,9 @@
 </script>
 
 <style scoped>
+	.tabs{
+		padding-top: var(--status-bar-height);
+	}
   .input-contenet{
     width: 600rpx;
     position: relative;
@@ -115,7 +124,9 @@
     height:118rpx ;
     position: relative;
     left: 44rpx;
-    top:140rpx
+    top:140rpx;
+	background: url('../../static/tourismCircle/images/add.png') center center no-repeat ;
+	background-size:118rpx 118rpx;
   }
   .publish-grid{
     position: relative;
